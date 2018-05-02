@@ -21,10 +21,18 @@ public class SearchFactory {
         ServiceLoader<Search> serviceLoader = ServiceLoader.load(Search.class);
         Iterator<Search> searchs = serviceLoader.iterator();
 
-        if (searchs.hasNext()) {
+        int count = 0;
+        while (searchs.hasNext()) {
             // 选择一个调用
             search = searchs.next();
+            count ++;
         }
+        System.out.println("[SearchFactory] spi 加载的实现类数量："+count);
+
+       /* if (searchs.hasNext()) {
+            // 选择一个调用
+            search = searchs.next();
+        }*/
         return search;
     }
 }
