@@ -12,6 +12,7 @@
     <module>java-demo-spi</module>
       <module>java-serializable</module>
       <module>java-netty</module>
+      <module>java-nio</module>
   </modules>
 
   <name>java-world</name>
