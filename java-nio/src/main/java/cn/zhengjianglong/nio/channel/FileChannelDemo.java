@@ -11,8 +11,15 @@ import java.nio.channels.FileChannel;
  * @author: zhengjianglong
  * @create: 2018-05-07 18:16
  */
-public class FileChannelTest {
+public class FileChannelDemo {
 
+    /**
+     * 利用文件通道读取文件内容
+     *
+     * @param path
+     *
+     * @throws IOException
+     */
     public void read(String path) throws IOException {
         // FileOutputStream 也可以
         RandomAccessFile file = new RandomAccessFile(getClass().getClassLoader().getResource(path).getPath(), "rw");
@@ -31,7 +38,7 @@ public class FileChannelTest {
             buffer.flip();
 
             while (buffer.hasRemaining()) {
-                System.out.println((char) buffer.get());
+                System.out.print((char) buffer.get());
             }
 
             buffer.clear();
@@ -41,6 +48,14 @@ public class FileChannelTest {
         file.close();
     }
 
+    /**
+     * 利用文件通道向文件写内容
+     *
+     * @param path
+     * @param content
+     *
+     * @throws IOException
+     */
     public void write(String path, byte[] content) throws IOException {
         // 1. 获取通道
         FileOutputStream out = new FileOutputStream(path);
@@ -55,20 +70,45 @@ public class FileChannelTest {
 
         // 3. 写入缓冲区
         channel.write(buffer);
-
+        out.flush();
         out.close();
     }
 
-    public void copy(String inPath, String outPath) throws IOException{
+    /**
+     * 两个文件的copy操作
+     *
+     * @param inPath
+     * @param outPath
+     * @throws IOException
+     */
+    public void copy(String inPath, String outPath) throws IOException {
         FileInputStream in = new FileInputStream(inPath);
         FileOutputStream out = new FileOutputStream(outPath);
+
+        FileChannel inChannel = in.getChannel();
+        FileChannel outChannel = out.getChannel();
+
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+        int readBytes = inChannel.read(buffer);
+        while (readBytes != -1) {
+            // 关键
+            buffer.flip();
+            outChannel.write(buffer);
+
+            // 重设缓冲区
+            buffer.clear();
+            readBytes = inChannel.read(buffer);
+        }
 
     }
 
     public static void main(String[] args) throws IOException {
-        FileChannelTest test = new FileChannelTest();
-        test.read("nio-data.txt");
+        FileChannelDemo test = new FileChannelDemo();
+        // test.read("nio-data.txt");
 
-        test.write("nio-write.txt", "hello world!".getBytes());
+        // test.write("nio-write.txt", "hello world!".getBytes());
+
+        test.copy("nio-data.txt", "nio-data-copy.txt");
     }
 }
