@@ -13,6 +13,8 @@
       <module>java-serializable</module>
       <module>java-netty</module>
       <module>java-nio</module>
+      <module>java-thread</module>
+    <module>java-redis</module>
   </modules>
 
   <name>java-world</name>
